@@ -1,4 +1,7 @@
 import { CollectionConfig } from 'payload/types'
+import { publishedPosts } from '../access/postsAccess'
+import { SlugField, TitleField } from '../fields'
+import slug from '../fields/slug'
 
 const Posts: CollectionConfig = {
   slug: 'posts',
@@ -7,32 +10,51 @@ const Posts: CollectionConfig = {
     useAsTitle: 'title'
   },
   access: {
-    read: () => true
+    read: publishedPosts
   },
   fields: [
+    TitleField,
+    slug(),
     {
-      name: 'title',
-      type: 'text'
+      name: 'featuredImage',
+      type: 'upload',
+      relationTo: 'media',
+      required: true
     },
     {
       name: 'author',
       type: 'relationship',
-      relationTo: 'users'
+      relationTo: 'users',
+      defaultValue: ({ user }) => user.id,
+      required: true,
+      admin: {
+        position: 'sidebar'
+      }
     },
     {
       name: 'publishedDate',
-      type: 'date'
+      type: 'date',
+      defaultValue: () => new Date(),
+      admin: {
+        position: 'sidebar'
+      }
     },
     {
       name: 'category',
       type: 'relationship',
-      relationTo: 'categories'
+      relationTo: 'categories',
+      admin: {
+        position: 'sidebar'
+      }
     },
     {
       name: 'tags',
       type: 'relationship',
       relationTo: 'tags',
-      hasMany: true
+      hasMany: true,
+      admin: {
+        position: 'sidebar'
+      }
     },
     {
       name: 'content',

@@ -1,4 +1,5 @@
 import { CollectionConfig } from 'payload/types'
+import { isAdmin } from '../access/isAdmin'
 import { getHashedOTP, verifyHashedOTP } from './hooks/bcrypt'
 
 const Users: CollectionConfig = {
@@ -63,6 +64,23 @@ const Users: CollectionConfig = {
       type: 'text',
       admin: {
         readOnly: true
+      }
+    },
+    {
+      name: 'role',
+      type: 'radio',
+      options: [
+        {
+          value: 'user',
+          label: 'User'
+        },
+        {
+          value: 'admin',
+          label: 'Admin'
+        }
+      ],
+      access: {
+        update: isAdmin
       }
     }
   ],
